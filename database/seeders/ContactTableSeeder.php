@@ -16,7 +16,8 @@ class ContactTableSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        for ($i = 0; $i < 10; $i++) {
+        // Faker che mi popola il db con 12 contatti creati in modo random
+        for ($i = 0; $i < 12; $i++) {
             $contact = new Contact();
             $contact->name = $faker->firstName();
             $contact->last_name = $faker->lastName();

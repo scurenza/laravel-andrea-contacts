@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 
-class ContactController extends Controller
+class Usercontroller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +15,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        // Chiamata che mi permette di mandare un file JSON al frontend
         $contacts = Contact::all();
-        return response()->json([
-            'success' => true,
-            'results' => $contacts
-        ]);
+        return view('contacts.index', compact('contacts'));
     }
 
     /**
@@ -30,7 +26,7 @@ class ContactController extends Controller
      */
     public function create()
     {
-        //
+        return view('contacts.create');
     }
 
     /**
@@ -41,7 +37,12 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $contact = new Contact();
+        $contact->fill($data);
+        $contact->save();
+
+        return redirect()->route('contacts.index', $contact->id);
     }
 
     /**
@@ -52,7 +53,9 @@ class ContactController extends Controller
      */
     public function show($id)
     {
-        //
+        $contact = Contact::findorFail($id);
+
+        return view('contacts.show', compact('contact'));
     }
 
     /**
@@ -61,9 +64,9 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Contact $contact)
     {
-        //
+        return view('contacts.edit', compact('contact'));
     }
 
     /**
@@ -73,9 +76,11 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Contact $contact)
     {
-        //
+        $formData = $request->all();
+        $contact->update($formData);
+        return redirect()->route('contacts.index', $contact->id);
     }
 
     /**
@@ -84,8 +89,9 @@ class ContactController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Contact $contact)
     {
-        //
+        $contact->delete();
+        return redirect()->route('contacts.index');
     }
 }
